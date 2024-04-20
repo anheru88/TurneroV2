@@ -69,7 +69,12 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('roles.name')
-                    ->label('Roles'),
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        Role::SUPER_ADMIN => 'danger',
+                        Role::ADMIN => 'warning',
+                        Role::OPERATOR => 'success',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

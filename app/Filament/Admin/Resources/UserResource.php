@@ -51,6 +51,12 @@ class UserResource extends Resource
                 Forms\Components\Select::make('module_id')
                     ->relationship('module', 'name')
                     ->default(null),
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->default(null)
+                    ->options(function () {
+                        return Role::where('name', '<>', 'Super Admin')->pluck('name', 'id');
+                    }),
             ]);
     }
 
@@ -62,13 +68,18 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        Role::SUPER_ADMIN => 'danger',
+                        Role::ADMIN => 'warning',
+                        Role::OPERATOR => 'success',
+                    }),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
