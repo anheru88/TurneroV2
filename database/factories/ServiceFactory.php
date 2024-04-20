@@ -24,7 +24,7 @@ class ServiceFactory extends Factory
         }
 
         return [
-            'name'       => fake()->name(),
+            'name' => fake()->name(),
             'service_parent_id' => $service_id,
         ];
     }

@@ -16,9 +16,9 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable, FilamentUser
 {
-    use  HasFactory, HasRoles, Notifiable;
-    use \OwenIt\Auditing\Auditable;
+    use HasFactory, HasRoles, Notifiable;
     use HasSuperAdmin;
+    use \OwenIt\Auditing\Auditable;
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +49,7 @@ class User extends Authenticatable implements Auditable, FilamentUser
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
+        'password' => 'hashed',
     ];
 
     /**

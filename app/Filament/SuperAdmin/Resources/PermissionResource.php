@@ -2,25 +2,23 @@
 
 namespace App\Filament\SuperAdmin\Resources;
 
-use App\Filament\SuperAdmin\Resources\ServicesResource\Pages;
-use App\Filament\SuperAdmin\Resources\ServicesResource\RelationManagers;
-use App\Models\Service;
+use App\Filament\SuperAdmin\Resources\PermissionResource\Pages;
+use App\Models\Permission;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ServicesResource extends Resource
+class PermissionResource extends Resource
 {
-    protected static ?string $model = Service::class;
+    protected static ?string $model = Permission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
+    protected static ?string $navigationIcon = 'heroicon-o-lock-open';
 
-    protected static ?string $navigationGroup = 'Management';
+    protected static ?string $navigationGroup = 'Settings';
 
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -29,9 +27,9 @@ class ServicesResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('service_parent_id')
-                    ->relationship('parent', 'name')
-                    ->default(null),
+                Forms\Components\TextInput::make('guard_name')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -41,13 +39,8 @@ class ServicesResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('parent.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('guard_name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -75,7 +68,7 @@ class ServicesResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageServices::route('/'),
+            'index' => Pages\ManagePermissions::route('/'),
         ];
     }
 }
