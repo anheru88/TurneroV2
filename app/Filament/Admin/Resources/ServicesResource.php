@@ -3,18 +3,23 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ServicesResource\Pages;
+use App\Models\Role;
 use App\Models\Service;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ServicesResource extends Resource
 {
     protected static ?string $model = Service::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
+
+    protected static ?string $navigationGroup = 'Management';
+
 
     public static function form(Form $form): Form
     {
@@ -23,8 +28,13 @@ class ServicesResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('service_parent_id')
-                    ->numeric()
+                Forms\Components\Select::make('service_parent_id')
+                    ->relationship(
+                        name: 'parent',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: function (Builder $query, $record) {
+                            return $query->where('id', '!=', $record->id);
+                        })
                     ->default(null),
             ]);
     }
@@ -35,7 +45,7 @@ class ServicesResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('service_parent_id')
+                Tables\Columns\TextColumn::make('parent.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
